@@ -11,9 +11,9 @@ public class ResetAfterCompleteAction extends DelegateAction {
 	
 	@Override
 	protected boolean delegate(float delta) {
-		boolean result = action.act(delta);
-		if (true)
+		boolean done = action.act(delta);
+		if (done)
 			action.reset();
-		return result;
+		return done;
 	}
 }
