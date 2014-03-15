@@ -10,11 +10,9 @@ import static com.javadocmd.actionTest.Person.JANE;
 
 import java.util.Random;
 
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.CountdownEventAction;
 import com.javadocmd.actionTest.action.FireEventAction;
-import com.javadocmd.actionTest.action.ResetAfterCompleteAction;
 import com.javadocmd.actionTest.actor.RunnerActor;
 import com.javadocmd.actionTest.actor.TrafficLightActor;
 import com.javadocmd.actionTest.event.RaceWinEvent;
@@ -39,9 +37,6 @@ public class RaceActionGenerator {
 			final RunnerActor jack, final TrafficLightActor leftLight,
 			final TrafficLightActor rightLight) {
 		
-		// I only want to use one instance because once it's added, it's always listening.
-		Action waitForWinner = new ResetAfterCompleteAction(new CountdownEventAction<RaceWinEvent>(RaceWinEvent.class, 1));
-		
 		// Notice I'm using "group" as the single point of control for the action sequence.
 		group.addAction(forever(sequence(
 			// #1: a one second delay
@@ -61,8 +56,8 @@ public class RaceActionGenerator {
 					));
 				}
 			}),
-			// #3: use a GateAction to wait for the end of the race
-			waitForWinner,
+			// #3: use a CountdownEventAction to wait for the end of the race
+			new CountdownEventAction<RaceWinEvent>(RaceWinEvent.class, 1),
 			// #4: change the lights and turn Jack and Jane around so they can run the next race
 			run(new Runnable() {
 				@Override
@@ -89,7 +84,7 @@ public class RaceActionGenerator {
 					));
 				}
 			}),
-			waitForWinner,
+			new CountdownEventAction<RaceWinEvent>(RaceWinEvent.class, 1),
 			run(new Runnable() {
 				@Override
 				public void run() {
